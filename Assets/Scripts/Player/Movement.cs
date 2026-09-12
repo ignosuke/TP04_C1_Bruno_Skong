@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Movement : MonoBehaviour
@@ -20,6 +21,9 @@ public class Movement : MonoBehaviour
 
     private Rigidbody2D rb;
     private Collider2D col;
+
+    private bool isClamped = false;
+    public event Action<bool> OnClampedChanged;
 
     private void Awake()
     {
@@ -82,19 +86,39 @@ public class Movement : MonoBehaviour
 
         direction = direction.normalized; // Para evitar que el movimiento diagonal sea más rápido que el horizontal o vertical
 
-        Vector2 targetPosition = rb.position + direction * speed * Time.fixedDeltaTime;
+        Vector2 targetPosition = ClampToBounds(rb.position + speed * Time.fixedDeltaTime * direction);
 
+        if (targetPosition != rb.position) rb.MovePosition(targetPosition);
+    }
+
+    private Vector2 ClampToBounds(Vector2 position)
+    {
         // Se lee cada vez porque SizeChanger puede modificar el tamaño en runtime
         float halfWidth = col.bounds.extents.x;
         float halfHeight = col.bounds.extents.y;
 
-        // El clamp se aplica una sola vez, sobre la posicion final
-        // Los limites se achican por el tamaño de la paleta para que tope el borde del sprite y no el pivot que está en el centro
-        targetPosition.x = Mathf.Clamp(targetPosition.x, courtBounds.GetMinX(playerId) + halfWidth, courtBounds.GetMaxX(playerId) - halfWidth);
+        Vector2 original = position;
 
-        targetPosition.y = Mathf.Clamp(targetPosition.y, courtBounds.GetBottomY() + halfHeight, courtBounds.GetTopY() - halfHeight);
+        position.x = Mathf.Clamp(
+            position.x,
+            courtBounds.GetMinX(playerId) + halfWidth,
+            courtBounds.GetMaxX(playerId) - halfWidth);
 
-        rb.MovePosition(targetPosition);
+        position.y = Mathf.Clamp(
+            position.y,
+            courtBounds.GetBottomY() + halfHeight,
+            courtBounds.GetTopY() - halfHeight);
+
+        // Si el clamp modifico algo, el jugador esta empujando contra un limite
+        bool clampedNow = position != original;
+
+        if (clampedNow != isClamped)
+        {
+            isClamped = clampedNow;
+            OnClampedChanged?.Invoke(isClamped);
+        }
+
+        return position;
     }
 
     private void HandleSpeedChanged(PlayerID id, float value)
