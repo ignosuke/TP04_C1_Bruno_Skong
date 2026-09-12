@@ -500,7 +500,7 @@ GameObject:
   - component: {fileID: 7115410187176766461}
   - component: {fileID: 8974463391717993391}
   m_Layer: 5
-  m_Name: CreditsPanel
+  m_Name: UiCreditsPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

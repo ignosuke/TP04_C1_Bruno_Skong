@@ -4,7 +4,8 @@ using TMPro;
 
 public class PlayerSettings : MonoBehaviour
 {
-    [SerializeField] private PlayerData.ID playerId;
+    [SerializeField] private PlayerDataSo data;
+    private PlayerID playerId;
 
     [SerializeField] private TMP_Text playerText;
     [Header("Speed")]
@@ -24,7 +25,8 @@ public class PlayerSettings : MonoBehaviour
 
     private void Awake()
     {
-        playerText.text = playerId == PlayerData.ID.One ? "Player 1" : "Player 2";
+        playerId = data.playerId;
+        playerText.text = playerId == PlayerID.One ? "Player 1" : "Player 2";
 
         colorButtonImage = colorButton.GetComponent<Image>();
 
@@ -47,9 +49,9 @@ public class PlayerSettings : MonoBehaviour
 
     private void RefreshUI()
     {
-        float speed = playerId == PlayerData.ID.One ? PlayerData.playerOneSpeed : PlayerData.playerTwoSpeed;
-        float width = playerId == PlayerData.ID.One ? PlayerData.playerOneWidth : PlayerData.playerTwoWidth;
-        Color color = playerId == PlayerData.ID.One ? PlayerData.playerOneColor : PlayerData.playerTwoColor;
+        float speed = PlayerPersistentData.GetSpeed(playerId);
+        float width = PlayerPersistentData.GetWidth(playerId);
+        Color color = PlayerPersistentData.GetColor(playerId);
 
         speedSlider.SetValueWithoutNotify(speed);
         speedText.text = "Speed: " + speed.ToString("0.0");
@@ -63,21 +65,20 @@ public class PlayerSettings : MonoBehaviour
     // Los sliders modifican los valores en PlayerData en lugar de tocar directamente los Players
     private void OnSpeedChanged(float value)
     {
-        PlayerData.SetSpeed(playerId, value);
+        PlayerPersistentData.SetSpeed(playerId, value);
         speedText.text = "Speed: " + value.ToString("0.0");
     }
 
     private void OnWidthChanged(float value)
     {
-        PlayerData.SetWidth(playerId, value);
+        PlayerPersistentData.SetWidth(playerId, value);
         widthText.text = "Width: " + value.ToString("0.0");
     }
 
     private void RandomizeColor()
     {
         Color newColor = colorOptions[Random.Range(0, colorOptions.Length)];
-        PlayerData.SetColor(playerId, newColor);
+        PlayerPersistentData.SetColor(playerId, newColor);
         colorButtonImage.color = newColor;
     }
-
 }

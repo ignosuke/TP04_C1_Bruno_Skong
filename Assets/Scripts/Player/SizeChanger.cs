@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class SizeChanger : MonoBehaviour
 {
-    [SerializeField] private PlayerData.ID playerId;
+    [SerializeField] private PlayerDataSo data;
+    private PlayerID playerId;
 
     private const float minWidth = 1f;
     private const float maxWidth = 3f;
@@ -13,25 +14,26 @@ public class SizeChanger : MonoBehaviour
     private void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
+        playerId = data.playerId;
     }
 
     private void Start()
     {
-        SetWidth(PlayerData.GetWidth(playerId));
+        SetWidth(PlayerPersistentData.GetWidth(playerId));
     }
 
     // Igual que en Movement, suscribe y desuscribe para actualizarse cuando Settings modifique PlayerData
     private void OnEnable()
     {
-        PlayerData.OnWidthChanged += HandleWidthChanged;
+        PlayerPersistentData.OnWidthChanged += HandleWidthChanged;
     }
 
     private void OnDisable()
     {
-        PlayerData.OnWidthChanged -= HandleWidthChanged;
+        PlayerPersistentData.OnWidthChanged -= HandleWidthChanged;
     }
 
-    private void HandleWidthChanged(PlayerData.ID id, float value)
+    private void HandleWidthChanged(PlayerID id, float value)
     {
         if (id == playerId)
             SetWidth(value);

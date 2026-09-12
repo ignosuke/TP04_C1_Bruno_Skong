@@ -104,7 +104,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8447101820606205682}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
@@ -122,7 +122,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 5
+  m_Constraints: 4
 --- !u!61 &8884779203113992943
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -181,8 +181,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e81da5fb27bdaa04399de6a0b8ef087c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Movement
-  playerId: 0
-  movementKeys: 0
+  data: {fileID: 0}
+  courtBounds: {fileID: 11400000, guid: d9d2ce242c22fd54fba625c3fd018cab, type: 2}
 --- !u!114 &7089202223299344795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195,7 +195,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48c6873e40b94cf46b9270585ef8780a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SizeChanger
-  playerId: 0
+  data: {fileID: 0}
 --- !u!114 &5664597334557583623
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -208,4 +208,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f9a9b142d4860b46ac38050dddf2a51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ColorChanger
-  playerId: 0
+  data: {fileID: 0}
