@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class SizeChanger : MonoBehaviour
 {
-    [SerializeField] private PlayerDataSo data;
+    [SerializeField] private PlayerDataSo playerData;
     private PlayerID playerId;
 
     private const float minWidth = 1f;
@@ -14,7 +14,7 @@ public class SizeChanger : MonoBehaviour
     private void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
-        playerId = data.playerId;
+        playerId = playerData.playerId;
     }
 
     private void Start()

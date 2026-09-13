@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    [SerializeField] private PlayerDataSo data;
+    [SerializeField] private PlayerDataSo playerData;
     [SerializeField] private CourtBoundsSo courtBounds;
 
     private PlayerID playerId;
@@ -13,6 +13,8 @@ public class Movement : MonoBehaviour
     private const float minSpeed = .5f;
     private const float maxSpeed = 20f;
     private float speed = 5f;
+
+    private bool movementEnabled = true;
 
     private KeyCode upKey;
     private KeyCode downKey;
@@ -24,13 +26,14 @@ public class Movement : MonoBehaviour
 
     private bool isClamped = false;
     public event Action<bool> OnClampedChanged;
+    public event Action OnBallHit;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
-        playerId = data.playerId;
-        movementKeys = data.movementKeys;
+        playerId = playerData.playerId;
+        movementKeys = playerData.movementKeys;
 
         SetupKeys();
     }
@@ -125,6 +128,12 @@ public class Movement : MonoBehaviour
     {
         if (id == playerId)
             SetSpeed(value);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.TryGetComponent<Ball>(out _)) // Chequea la colision con un Ball y descarta la referencia
+            OnBallHit?.Invoke();
     }
 
     public float GetSpeed()
