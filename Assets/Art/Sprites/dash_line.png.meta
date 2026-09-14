@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 8e45ae806410b7d45892761d80c2ce84
+guid: 14e0f5d157224d248b127ac57ebbf2da
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5603656167612619983
-    second: ball_blue_large_alt_0
+      213: -6696837884947187405
+    second: dash_line 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -40,13 +40,13 @@ TextureImporter:
     filterMode: 1
     aniso: 1
     mipBias: 0
-    wrapU: 1
-    wrapV: 1
-    wrapW: 1
+    wrapU: 0
+    wrapV: 0
+    wrapW: 0
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 0
   alignment: 0
@@ -126,23 +126,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ball_blue_large_alt_0
+      name: dash_line 1_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 128
-        height: 128
+        width: 24
+        height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 133e50ea760db32b0800000000000000
-      internalID: -5603656167612619983
+      spriteID: 339385dcc6d0013a0800000000000000
+      internalID: -6696837884947187405
       vertices: []
       indices: 
       edges: []
@@ -151,7 +151,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 5372b3f5aa760b24eba3d97c08762c5c
     internalID: 0
     vertices: []
     indices: 
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ball_blue_large_alt_0: -5603656167612619983
+      dash_line 1_0: -6696837884947187405
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

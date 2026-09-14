@@ -1,38 +1,49 @@
+using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private GameSettingsSo gameSettings;
     [SerializeField] private Ball ball;
 
+    [Header("Goal Zones")]
+    [SerializeField] private GoalZone goalZoneOne;
+    [SerializeField] private GoalZone goalZoneTwo;
+
     [Header("UI")]
     [SerializeField] private RulesPanel rulesPanel;
+    [SerializeField] private MatchEndPanel matchEndPanel;
+    [SerializeField] private GameObject gameHUD;
 
     [Header("Players")]
     [SerializeField] private Movement playerOneMovement;
     [SerializeField] private Movement playerTwoMovement;
 
-    [Header("Goal Zones")]
-    [SerializeField] private GoalZone goalZoneOne;
-    [SerializeField] private GoalZone goalZoneTwo;
-
     private readonly MatchSettings matchSettings = new();
+
+    public event Action OnScoreChanged;
+    public event Action<GameState> OnStateChanged;
 
     private GameState state;
     private float serveTimer;
     private float goalTimer;  // Limite hasta decidir el gol segun la posicion de la pelota, se reinicia por ronda
-    private float matchTimer; // Duracion para el modo por tiempo
+    private float matchTimer; // Tiempo restante para el modo por tiempo
+    private float elapsedTime; // Tiempo transcurrido para el modo por rondas
     private float roundEndTimer; // Tiempo que sigue viajando la pelota despues del gol, se reinicia por ronda
 
     private int playerOneScore;
     private int playerTwoScore;
     private PlayerID nextServeTo;
+    private PlayerID lastScorer;
+    private PlayerID winner;
 
     private void OnEnable()
     {
         goalZoneOne.OnGoalConceded += HandleGoal;
         goalZoneTwo.OnGoalConceded += HandleGoal;
         rulesPanel.OnRulesConfirmed += HandleRulesConfirmed;
+        matchEndPanel.OnOptionSelected += HandleMatchEndOptions;
     }
 
     private void OnDisable()
@@ -40,6 +51,7 @@ public class GameManager : MonoBehaviour
         goalZoneOne.OnGoalConceded -= HandleGoal;
         goalZoneTwo.OnGoalConceded -= HandleGoal;
         rulesPanel.OnRulesConfirmed -= HandleRulesConfirmed;
+        matchEndPanel.OnOptionSelected -= HandleMatchEndOptions;
     }
 
     private void Start()
@@ -74,12 +86,11 @@ public class GameManager : MonoBehaviour
 
     private void EnterRuleSelection()
     {
-        state = GameState.RuleSelection;
-
         ball.StopAndReset();
         SetPlayersEnabled(false);
 
         rulesPanel.Open();
+        SetState(GameState.RuleSelection);
     }
 
     private void HandleRulesConfirmed(MatchMode mode, int presetIndex)
@@ -97,17 +108,15 @@ public class GameManager : MonoBehaviour
         playerOneScore = 0;
         playerTwoScore = 0;
         matchTimer = matchSettings.GetDuration();
+        elapsedTime = 0f;
 
         SetPlayersEnabled(true);
+        gameHUD.SetActive(true);
+
+        OnScoreChanged?.Invoke();
 
         // El primer saque es para un lado random
-        BeginServe(Random.value < .5f ? PlayerID.One : PlayerID.Two);
-    }
-
-    private void SetPlayersEnabled(bool isEnabled)
-    {
-        playerOneMovement.enabled = isEnabled;
-        playerTwoMovement.enabled = isEnabled;
+        BeginServe(UnityEngine.Random.value < .5f ? PlayerID.One : PlayerID.Two);
     }
 
     private void BeginServe(PlayerID serveTo)
@@ -117,7 +126,7 @@ public class GameManager : MonoBehaviour
 
         serveTimer = gameSettings.GetServeDelay();
         goalTimer = gameSettings.GetGoalTimeLimit(); // Se reinicia por ronda, no por golpe
-        state = GameState.Serving;
+        SetState(GameState.Serving);
     }
 
     private void UpdateServing()
@@ -127,11 +136,13 @@ public class GameManager : MonoBehaviour
         if (serveTimer > 0f) return;
 
         LaunchBall();
-        state = GameState.Playing;
+        SetState(GameState.Playing);
     }
 
     private void UpdateMatchTimer()
     {
+        elapsedTime += Time.deltaTime; // Corre en los dos modos
+
         if (matchSettings.GetMode() != MatchMode.Timed) return;
 
         matchTimer -= Time.deltaTime;
@@ -148,26 +159,15 @@ public class GameManager : MonoBehaviour
 
         if (goalTimer > 0f) return;
 
-        // Gol automatico al jugador que tiene la pelota de su lado
-        float ballX = ball.GetPositionX();
+        PlayerID concedingPlayer = GetPlayerOnBallSide();
 
-        PlayerID concedingPlayer;
-
-        if (ballX < 0f)
-            concedingPlayer = PlayerID.One; // P1 esta a la izquierda
-        else if (ballX > 0f)
-            concedingPlayer = PlayerID.Two;
-        else
-            concedingPlayer = gameSettings.GetTimeoutTiebreaker(); // Empate exacto en el centro
-
-        Debug.Log($"Timeout de ronda: gol automatico en contra de {concedingPlayer}");
         ResolveGoal(concedingPlayer);
     }
 
     private void LaunchBall()
     {
         float directionX = nextServeTo == PlayerID.One ? -1f : 1f;
-        float directionY = Random.value < .5f ? -1f : 1f;
+        float directionY = UnityEngine.Random.value < .5f ? -1f : 1f;
 
         ball.Launch(new Vector2(directionX, directionY));
     }
@@ -186,7 +186,8 @@ public class GameManager : MonoBehaviour
         PlayerID scoringPlayer = GetOpponent(concedingPlayer);
         AddPoint(scoringPlayer);
 
-        Debug.Log($"Gol de {scoringPlayer}. Score: {playerOneScore} - {playerTwoScore}");
+        lastScorer = scoringPlayer;
+        OnScoreChanged?.Invoke();
 
         if (HasWonMatch(scoringPlayer))
         {
@@ -197,7 +198,7 @@ public class GameManager : MonoBehaviour
         // No se toca la pelota todavia: sigue viajando hasta que expire roundEndTimer
         roundEndTimer = gameSettings.GetRoundEndDelay();
         nextServeTo = concedingPlayer; // Saca el que recibio el gol
-        state = GameState.RoundEnd;
+        SetState(GameState.RoundEnd);
     }
 
     private void UpdateRoundEnd()
@@ -221,22 +222,60 @@ public class GameManager : MonoBehaviour
     {
         if (playerOneScore == playerTwoScore)
         {
-            // Empatados al final: se sigue jugando y corta el proximo gol
-            Debug.Log("Tiempo cumplido con empate: muerte subita");
-            return;
+            PlayerID concedingPlayer = GetPlayerOnBallSide();
+            AddPoint(GetOpponent(concedingPlayer));
+
+            lastScorer = GetOpponent(concedingPlayer);
+            OnScoreChanged?.Invoke();
         }
 
         EndMatch(playerOneScore > playerTwoScore ? PlayerID.One : PlayerID.Two);
     }
 
-    private void EndMatch(PlayerID winner)
+    private void EndMatch(PlayerID matchWinner)
     {
-        SetPlayersEnabled(false);
         // No se resetea la pelota: termina de salir de cancha y ahi se queda
         // El proximo BeginServe la devuelve al centro
-        state = GameState.MatchEnd;
+        winner = matchWinner;
 
-        Debug.Log($"Gana {winner}. Score final: {playerOneScore} - {playerTwoScore}");
+        SetPlayersEnabled(false);
+        SetState(GameState.MatchEnd);
+
+        matchEndPanel.Open(winner, playerOneScore, playerTwoScore);
+    }
+
+    private void HandleMatchEndOptions(MatchEndOptions option)
+    {
+        switch (option)
+        {
+            case MatchEndOptions.RematchSameRules:
+                StartMatch();
+                break;
+
+            case MatchEndOptions.RematchNewRules:
+                EnterRuleSelection();
+                break;
+
+            case MatchEndOptions.MainMenu:
+                SceneManager.LoadScene("MainMenuScene");
+                break;
+
+            case MatchEndOptions.QuitGame:
+                Application.Quit();
+                break;
+        }
+    }
+
+    private void SetState(GameState newState)
+    {
+        state = newState;
+        OnStateChanged?.Invoke(state);
+    }
+
+    private void SetPlayersEnabled(bool isEnabled)
+    {
+        playerOneMovement.enabled = isEnabled;
+        playerTwoMovement.enabled = isEnabled;
     }
 
     private void AddPoint(PlayerID playerId)
@@ -247,6 +286,16 @@ public class GameManager : MonoBehaviour
             playerTwoScore++;
     }
 
+    private PlayerID GetPlayerOnBallSide()
+    {
+        float ballX = ball.GetPositionX();
+
+        if (ballX < 0f) return PlayerID.One; // P1 esta a la izquierda
+        if (ballX > 0f) return PlayerID.Two;
+
+        return gameSettings.GetTimeoutTiebreaker(); // Empate exacto en el centro
+    }
+
     public int GetScore(PlayerID playerId)
     {
         return playerId == PlayerID.One ? playerOneScore : playerTwoScore;
@@ -255,6 +304,44 @@ public class GameManager : MonoBehaviour
     public GameState GetState()
     {
         return state;
+    }
+
+    public MatchSettings GetMatchSettings()
+    {
+        return matchSettings;
+    }
+
+    public float GetMatchTimer()
+    {
+        return matchTimer;
+    }
+    public float GetElapsedTime()
+    {
+        return elapsedTime;
+    }
+    public float GetGoalTimer()
+    {
+        return goalTimer;
+    }
+
+    public float GetServeTimer()
+    {
+        return serveTimer;
+    }
+
+    public PlayerID GetNextServeTo()
+    {
+        return nextServeTo;
+    }
+
+    public PlayerID GetLastScorer()
+    {
+        return lastScorer;
+    }
+
+    public PlayerID GetWinner()
+    {
+        return winner;
     }
 
     private PlayerID GetOpponent(PlayerID playerId)

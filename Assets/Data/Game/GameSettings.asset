@@ -18,7 +18,7 @@ MonoBehaviour:
   - 30
   - 45
   - 60
-  goalTimeLimit: 5
-  serveDelay: 1
-  roundEndDelay: 1
+  goalTimeLimit: 20
+  serveDelay: 1.5
+  roundEndDelay: 2
   timeoutTiebreaker: 0
