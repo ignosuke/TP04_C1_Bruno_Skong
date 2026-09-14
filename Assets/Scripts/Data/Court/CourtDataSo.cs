@@ -10,8 +10,6 @@ public class CourtBoundsSo : ScriptableObject
     [Header("Límites horizontales")]
     [SerializeField] private float outerLimitX = 8f;
     [SerializeField] private float centerGapHalfWidth = 2f;
-
-    // Límites que tomará el jugador según su PlayerID (One = izquierda, Two = derecha)
     
     public float GetTopY() => topY;                                 // Hasta donde puede subir
     public float GetBottomY() => bottomY;                           // Hasta donde puede bajar

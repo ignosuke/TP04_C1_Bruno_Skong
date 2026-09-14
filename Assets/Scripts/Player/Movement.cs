@@ -8,13 +8,10 @@ public class Movement : MonoBehaviour
 
     private PlayerID playerId;
 
-    [Header("Movement Settings")]
     private MovementKeys movementKeys;
     private const float minSpeed = .5f;
     private const float maxSpeed = 20f;
     private float speed = 5f;
-
-    private bool movementEnabled = true;
 
     private KeyCode upKey;
     private KeyCode downKey;

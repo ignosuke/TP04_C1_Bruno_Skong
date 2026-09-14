@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: ffb0527c3641f84498abcf0a2a375502
+guid: aa8befdfb78352e49960e4432993333d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1770903750737958714
-    second: tile_grey_0
+      213: -4971021373277043607
+    second: block_rotate_clockwise_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,13 +46,13 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
-  spriteBorder: {x: 22, y: 22, z: 22, w: 26}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -126,23 +126,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: tile_grey_0
+      name: block_rotate_clockwise_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 80
-        height: 80
+        width: 64
+        height: 256
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 22, y: 22, z: 22, w: 26}
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6c86bdddb6c7c67e0800000000000000
-      internalID: -1770903750737958714
+      spriteID: 96482fa0662630bb0800000000000000
+      internalID: -4971021373277043607
       vertices: []
       indices: 
       edges: []
@@ -151,19 +151,17 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 903381789c9e29f47b59fef6b7777dcc
-    internalID: 1295986564
+    spriteID: 
+    internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+      entries: []
     nameFileIdTable:
-      tile_grey_0: -1770903750737958714
+      block_rotate_clockwise_0: -4971021373277043607
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

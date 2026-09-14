@@ -10,10 +10,12 @@ public class SizeChanger : MonoBehaviour
     private float width = 2f;
 
     private SpriteRenderer sr;
+    private BoxCollider2D col;
 
     private void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
+        col = GetComponent<BoxCollider2D>();
         playerId = playerData.playerId;
     }
 
@@ -43,5 +45,6 @@ public class SizeChanger : MonoBehaviour
     {
         width = Mathf.Clamp(newWidth, minWidth, maxWidth);
         sr.size = new Vector2(width, sr.size.y);
+        col.size = new Vector2(width, col.size.y);
     }
 }
