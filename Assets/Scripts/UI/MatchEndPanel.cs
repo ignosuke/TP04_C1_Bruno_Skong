@@ -18,6 +18,8 @@ public class MatchEndPanel : MonoBehaviour
 
     private void Awake()
     {
+        // Warning: los cuatro listeners son lambdas y no hay OnDestroy que los saque. Una lambda no se puede quitar con RemoveListener porque no tenés la referencia al delegado.
+        // Guardá los cuatro métodos con nombre (OnRematchSameRules, etc.) y dalos de baja en OnDestroy, como sí hacés en PlayerSettings.
         rematchSameRulesButton.onClick.AddListener(() => Select(MatchEndOptions.RematchSameRules));
         rematchNewRulesButton.onClick.AddListener(() => Select(MatchEndOptions.RematchNewRules));
         mainMenuButton.onClick.AddListener(() => Select(MatchEndOptions.MainMenu));

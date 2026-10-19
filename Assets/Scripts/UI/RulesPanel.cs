@@ -1,5 +1,7 @@
 using System;
 using TMPro;
+// Suggestion: `using Unity.VisualScripting;` no se usa en este archivo, lo agregó el autocompletado.
+// Borralo.
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -66,6 +68,8 @@ public class RulesPanel : MonoBehaviour
 
         for (int i = 0; i < timedPresetButtons.Length; i++)
         {
+            // Suggestion: `int index = i;` acá no se usa. En el Awake sí hace falta (para capturar la variable del for dentro de la lambda), pero en el OnDestroy no.
+            // Borrá la línea.
             int index = i;
             timedPresetButtons[i].onClick.RemoveAllListeners();
         }

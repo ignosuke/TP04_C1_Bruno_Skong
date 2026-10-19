@@ -21,6 +21,8 @@ public class MainMenuUIManager : MonoBehaviour
     [Header("Credits Menu Buttons")]
     [SerializeField] private Button creditsBackButton;
 
+    // Suggestion: este script y GameUIManager comparten los tres paneles, el par de botones Back, OpenSettings, OpenCredits, CloseSettings, CloseCredits y ExitGame, línea por línea.
+    // Una clase base con esa parte común y dos hijas con lo propio de cada escena (Play de un lado, pausa del otro) te saca unas cincuenta líneas duplicadas.
     private void Awake()
     {
         // Main Menu abierto al inicio, el resto oculto

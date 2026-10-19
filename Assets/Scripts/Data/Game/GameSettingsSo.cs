@@ -4,6 +4,8 @@ using UnityEngine;
 public class GameSettingsSo : ScriptableObject
 {
     [Header("Best Of Rounds Preset")]
+    // Warning: los seis campos son public y justo abajo declarás siete getters para los mismos valores. Mientras el campo siga siendo public, el getter no protege nada.
+    // Pasá los campos a [SerializeField] private y quedate solo con los getters.
     public int[] bestOfPresets = { 1, 3, 5, 7 };
 
     [Header("Match Time Presets")]

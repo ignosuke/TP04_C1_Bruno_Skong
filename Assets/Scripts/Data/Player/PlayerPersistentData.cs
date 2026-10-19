@@ -9,6 +9,8 @@ public static class PlayerPersistentData
 {
     public static bool isInitialized = false; // Para que solo se inicialice una vez por partida
 
+    // Warning: los siete campos static son public, así que cualquiera puede escribir PlayerPersistentData.playerOneSpeed directamente y saltearse SetSpeed, que es el único lugar donde se dispara OnSpeedChanged.
+    // Si eso pasa, el jugador nunca se entera del cambio. Pasalos a private static y dejá solo los Get y los Set como puerta de entrada.
     public static float playerOneSpeed = 5f; // Entre 0.5 y 20
     public static float playerOneWidth = 2f; // Entre 1 y 3
     public static Color playerOneColor = Color.white; // R/G/B, C/Y/M o White

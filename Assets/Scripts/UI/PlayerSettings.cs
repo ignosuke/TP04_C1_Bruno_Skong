@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+// Suggestion: Unity ya tiene una clase PlayerSettings (UnityEditor.PlayerSettings). Acá no choca porque esa es del editor, pero el nombre confunde al leer.
+// PlayerSettingsPanel o PlayerSettingsUI dicen mejor lo que es: un panel de UI, no los datos del jugador.
 public class PlayerSettings : MonoBehaviour
 {
     [SerializeField] private PlayerDataSo data;

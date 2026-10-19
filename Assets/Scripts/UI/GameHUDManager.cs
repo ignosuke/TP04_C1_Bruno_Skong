@@ -2,6 +2,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Error: el archivo se llama GameHUDManager.cs y la clase GameHud. Unity busca dentro de cada .cs una clase con el mismo nombre que el archivo; cuando no la encuentra, el componente no se puede agregar y los que ya están puestos (acá, el de UiGameHudPanel.prefab) pueden aparecer como Missing Script.
+// Renombrá la clase a GameHUDManager o el archivo a GameHud.cs, siempre desde el Project de Unity para que el .meta viaje con el archivo.
 public class GameHud : MonoBehaviour
 {
     [SerializeField] private GameManager gameManager;

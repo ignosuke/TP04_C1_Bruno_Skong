@@ -257,10 +257,14 @@ public class GameManager : MonoBehaviour
                 break;
 
             case MatchEndOptions.MainMenu:
+                // Warning: "MainMenuScene" escrito a mano acá, y otra vez en GameUIManager.cs:112 y MainMenuUIManager.cs:56 (esta última con "GameScene").
+                // Declaralos como const string en una clase compartida: si renombrás una escena el proyecto compila igual y falla recién en runtime.
                 SceneManager.LoadScene("MainMenuScene");
                 break;
 
             case MatchEndOptions.QuitGame:
+                // Warning: Application.Quit() sin el bloque #if UNITY_EDITOR. En el build funciona, pero en el editor este botón no hace nada y parece roto.
+                // Copiá las cuatro líneas que ya tenés bien escritas en GameUIManager.ExitGame.
                 Application.Quit();
                 break;
         }
@@ -296,6 +300,8 @@ public class GameManager : MonoBehaviour
         return gameSettings.GetTimeoutTiebreaker(); // Empate exacto en el centro
     }
 
+    // Suggestion: de acá al final hay nueve métodos Get de una línea. En C# eso se escribe como property de solo lectura: public GameState State => state;
+    // Queda más corto y deja claro que son lecturas, no operaciones.
     public int GetScore(PlayerID playerId)
     {
         return playerId == PlayerID.One ? playerOneScore : playerTwoScore;

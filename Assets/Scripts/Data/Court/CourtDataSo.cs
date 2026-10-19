@@ -1,6 +1,8 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "CourtBounds", menuName = "Data/Court/CourtBounds")]
+// Error: el archivo se llama CourtDataSo.cs y la clase CourtBoundsSo. Vale lo mismo que en GameHUDManager.cs: el nombre del archivo tiene que ser igual al de la clase.
+// Como el asset CourtBounds.asset ya apunta a este script, renombrá el archivo a CourtBoundsSo.cs desde el Project de Unity.
 public class CourtBoundsSo : ScriptableObject
 {
     [Header("Límites verticales")]

@@ -57,6 +57,8 @@ public class GameUIManager : MonoBehaviour
         }
     }
 
+    // Warning: el OnDestroy da de baja seis botones pero se saltea settingsBackButton y creditsBackButton, que se registran en el Awake (líneas 41 y 42).
+    // Agregalos. Y ojo con RemoveAllListeners: borra también lo que alguien haya cableado desde el inspector; si vos registraste con AddListener, dá de baja con RemoveListener del mismo método.
     private void OnDestroy()
     {
         continueButton.onClick.RemoveAllListeners();
@@ -109,6 +111,8 @@ public class GameUIManager : MonoBehaviour
         pausePanel.Close();
         isPaused = false;
 
+        // Bug: se vuelve al menú desde la pausa, con Time.timeScale en 0, y acá no se lo devuelve a 1. MainMenuUIManager tampoco lo toca, así que la escena de menú queda congelada y, al apretar Play de nuevo, la partida arranca con el tiempo detenido.
+        // Poné Time.timeScale = 1f antes del LoadScene, igual que hacés en ResumeGame.
         SceneManager.LoadScene("MainMenuScene");
     }
 
